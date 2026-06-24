@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>SPECM13 P4 — Scenario: Come ti comporti?</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0d2b45,#1a5276,#1f618d);min-height:100vh;overflow:hidden;display:flex;justify-content:center;align-items:center}
+.container{background:#fff;width:800px;height:550px;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.header{background:linear-gradient(135deg,#0d2b45,#1a5276);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+.btn-group{display:flex;gap:8px}
+button{padding:7px 13px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#0d2b45}.btn-white:hover{background:#e8eaf6}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.hidden{display:none!important}
+.instr{padding:18px 24px;overflow-y:auto;flex:1}
+.instr h2{color:#1a5276;font-size:16px;margin-bottom:10px}
+.instr p,.instr li{font-size:13px;line-height:1.6;color:#444;margin-bottom:5px}
+.instr ul{margin-left:18px;margin-bottom:10px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#e8eaf6;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#1a5276;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.start-btn{background:linear-gradient(135deg,#0d2b45,#1a5276);color:#fff;padding:11px 32px;font-size:14px;border-radius:8px;display:block;margin:14px auto 0;cursor:pointer;border:none;font-weight:600}
+.start-btn:hover{transform:translateY(-2px)}
+.game-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.status-bar{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;flex-shrink:0;font-size:12px}
+.q-badge{background:#1a5276;color:#fff;border-radius:20px;padding:2px 12px;font-size:12px;font-weight:700}
+.prog-bar{flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#0d2b45,#2980b9);border-radius:3px;transition:width .4s}
+.score-lbl{font-weight:700;color:#1a5276}
+.card-area{flex:1;display:flex;flex-direction:column;padding:12px 20px;gap:10px;overflow-y:auto}
+.topic-tag{background:#e8eaf6;color:#1a5276;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;align-self:flex-start}
+.scenario-card{background:#fafafa;border:2px solid #90a4ae;border-radius:12px;padding:13px 18px;font-size:14px;color:#263238;line-height:1.5;font-weight:500;flex-shrink:0}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt-btn{width:100%;text-align:left;padding:9px 14px;border-radius:8px;border:2px solid #b0bec5;background:#fff;font-size:12px;color:#263238;cursor:pointer;transition:all .2s;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:#1a5276;background:#e8eaf6;transform:translateX(4px)}
+.opt-btn.correct{background:#e8f5e9;border-color:#43a047;color:#1b5e20;font-weight:700}
+.opt-btn.wrong{background:#ffebee;border-color:#e53935;color:#b71c1c}
+.opt-btn:disabled{cursor:default}
+.feedback-area{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:8px;padding:8px 13px;font-size:12px;color:#0d47a1;line-height:1.5;display:none}
+.feedback-area.show{display:block}
+.next-row{display:flex;justify-content:flex-end}
+.next-q-btn{background:linear-gradient(135deg,#0d2b45,#1a5276);color:#fff;padding:8px 22px;font-size:12px;border-radius:7px;cursor:pointer;border:none;font-weight:600;display:none}
+.next-q-btn.show{display:block}
+.result-page{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.result-box{text-align:center;max-width:480px}
+.result-icon{font-size:55px;margin-bottom:12px}
+.result-box h2{font-size:20px;font-weight:700;color:#1a5276;margin-bottom:8px}
+.result-box p{font-size:13px;color:#555;line-height:1.6;margin-bottom:15px}
+.result-score{background:#e8eaf6;border-radius:10px;padding:10px 20px;font-size:15px;font-weight:700;color:#1a5276;margin-bottom:15px;display:inline-block}
+.result-btns{display:flex;gap:10px;justify-content:center}
+.btn-prim{background:linear-gradient(135deg,#0d2b45,#1a5276);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;cursor:pointer;border:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>💼 Scenario: come ti comporti?</h1><p>SPECM13 P4 – VDT, luoghi di lavoro, stress, emergenza</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">🔄 Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="content">
+    <div id="instrPage" class="instr">
+      <h2>🎯 Come funziona</h2>
+      <p>Ti vengono presentati <strong>7 scenari reali</strong> legati a postazioni VDT, luoghi di lavoro, stress lavoro-correlato e gestione delle emergenze. Per ciascuno, scegli il comportamento corretto.</p>
+      <div class="how-grid">
+        <div class="how-step"><span class="num">📋</span>Leggi lo scenario con attenzione</div>
+        <div class="how-step"><span class="num">🤔</span>Scegli tra le 3 opzioni</div>
+        <div class="how-step"><span class="num">💡</span>Leggi la spiegazione e vai avanti</div>
+      </div>
+      <ul><li>Argomenti: pause VDT, vie di esodo, stress, evacuazione, ergonomia, segnalazione pericoli</li><li>Una sola risposta è corretta per ogni scenario</li></ul>
+      <button class="start-btn" onclick="startGame()">▶ Inizia</button>
+    </div>
+    <div id="gamePage" class="game-wrap hidden">
+      <div class="status-bar">
+        <span class="q-badge">Scenario <span id="qNum">1</span>/7</span>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <span class="score-lbl">Corretti: <span id="scoreNum">0</span></span>
+      </div>
+      <div class="card-area">
+        <div class="topic-tag" id="topicTag"></div>
+        <div class="scenario-card" id="scenCard"></div>
+        <div class="options" id="optionsWrap"></div>
+        <div class="feedback-area" id="feedbackArea"></div>
+        <div class="next-row"><button class="next-q-btn" id="nextQBtn" onclick="nextQ()">Scenario successivo →</button></div>
+      </div>
+    </div>
+    <div id="resultPage" class="result-page hidden">
+      <div class="result-box">
+        <div class="result-icon" id="rIcon"></div>
+        <h2 id="rTitle"></h2>
+        <div class="result-score" id="rScore"></div>
+        <p id="rMsg"></p>
+        <div class="result-btns">
+          <button class="btn-prim" onclick="resetGame()">🔄 Rigioca</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const SCENARIOS=[
+  {tag:"💻 Videoterminale",q:"Lavori al PC da quasi 2 ore di fila. Gli occhi bruciano e hai mal di testa. Cosa fai?",
+   opts:[{t:"Continuo: ho troppo lavoro da finire.",ok:false},{t:"Mi fermo 15 minuti come previsto dalla legge, mi allontano dallo schermo e riposo gli occhi.",ok:true},{t:"Aspetto di finire il lavoro, poi vedo.",ok:false}],
+   exp:"La normativa (D.Lgs. 81/2008) prevede una pausa di almeno 15 minuti ogni 2 ore di lavoro continuativo al VDT. È un diritto e una tutela."},
+  {tag:"🏢 Luoghi di lavoro",q:"Trovi il corridoio di emergenza ostruito da scatole lasciate da un collega. Cosa fai?",
+   opts:[{t:"Ci passo lo stesso, facendo attenzione. Tanto è temporaneo.",ok:false},{t:"Sposto le scatole in un'area adeguata e segnalo la situazione al preposto.",ok:true},{t:"Non è un mio problema, qualcun altro ci penserà.",ok:false}],
+   exp:"Le vie di fuga devono essere sempre libere. Ostruirle è una violazione grave. Rimuovere l'ostacolo e segnalarlo al preposto è il comportamento corretto."},
+  {tag:"😓 Stress lavoro-correlato",q:"Un tuo collega è sempre irritabile, fa errori insoliti e sembra esausto da settimane. Cosa fai?",
+   opts:[{t:"Non mi riguarda, ognuno ha i suoi problemi.",ok:false},{t:"Lo prendo in giro per sdrammatizzare.",ok:false},{t:"Ne parlo con il preposto o suggerisco al collega di confrontarsi con il medico competente.",ok:true}],
+   exp:"Lo stress lavoro-correlato è riconosciuto dalla normativa. Il medico competente è la figura adatta per supportare il lavoratore. Ignorare i segnali non aiuta."},
+  {tag:"🚨 Gestione emergenza",q:"Scatta l'allarme antincendio mentre stai lavorando. Cosa fai?",
+   opts:[{t:"Finisco quello che stavo facendo, poi esco con calma.",ok:false},{t:"Seguo immediatamente la procedura di evacuazione e raggiungo il punto di raccolta.",ok:true},{t:"Aspetto che qualcuno mi dica cosa fare.",ok:false}],
+   exp:"In caso di allarme antincendio si abbandona subito il posto di lavoro e si segue la procedura di evacuazione. Non si aspetta mai."},
+  {tag:"💻 Videoterminale",q:"Il monitor è posizionato troppo in basso e hai costanti dolori al collo. Come risolvi?",
+   opts:[{t:"Mi adatto e continuo: è sempre stato così.",ok:false},{t:"Porto un cuscino da casa per alzarmi sulla sedia.",ok:false},{t:"Segnalo il problema al preposto e regolo la postazione: schermo a livello degli occhi, distanza 50-70 cm.",ok:true}],
+   exp:"Una postazione VDT ergonomica prevede monitor a livello degli occhi (o leggermente sotto), a 50-70 cm di distanza. Segnalare i disagi è corretto."},
+  {tag:"🏢 Luoghi di lavoro",q:"Noti una perdita di liquido sconosciuto sul pavimento in magazzino. Cosa fai?",
+   opts:[{t:"Pulisco subito con uno straccio per evitare che qualcuno scivoli.",ok:false},{t:"Metto un cartello di pericolo e vado avanti col lavoro.",ok:false},{t:"Avviso subito il preposto, segnalo l'area e non tocco nulla finché il liquido non è identificato.",ok:true}],
+   exp:"Un liquido sconosciuto potrebbe essere chimicamente pericoloso. Prima di intervenire bisogna identificarlo. Il preposto decide come procedere in sicurezza."},
+  {tag:"😓 Stress lavoro-correlato",q:"Ti senti sopraffatto dal lavoro, dormi male e fai fatica a concentrarti da settimane. Cosa fai?",
+   opts:[{t:"Non ne parlo con nessuno: è normale, passerà da solo.",ok:false},{t:"Aumento le ore di lavoro per recuperare il ritardo accumulato.",ok:false},{t:"Ne parlo con il medico competente e valuto di segnalarlo al preposto per rivedere il carico.",ok:true}],
+   exp:"Lo stress cronico va riconosciuto e affrontato. Il medico competente può attivare percorsi di supporto. Ignorarlo peggiora la situazione."},
+];
+let qs=[],idx=0,score=0,answered=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startGame(){
+  qs=shuffle([...SCENARIOS]);idx=0;score=0;
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  loadQ();
+}
+function resetGame(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+}
+function loadQ(){
+  answered=false;
+  const sc=qs[idx];
+  document.getElementById('qNum').textContent=idx+1;
+  document.getElementById('progFill').style.width=(idx/qs.length*100)+'%';
+  document.getElementById('scoreNum').textContent=score;
+  document.getElementById('topicTag').textContent=sc.tag;
+  document.getElementById('scenCard').textContent=sc.q;
+  document.getElementById('feedbackArea').className='feedback-area';
+  document.getElementById('feedbackArea').textContent='';
+  document.getElementById('nextQBtn').className='next-q-btn';
+  const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';
+  shuffle([...sc.opts]).forEach(o=>{
+    const b=document.createElement('button');b.className='opt-btn';b.textContent=o.t;
+    b.dataset.ok=o.ok;
+    b.addEventListener('click',()=>selectOpt(b,o.ok,sc.exp,sc.opts));
+    wrap.appendChild(b);
+  });
+}
+function selectOpt(btn,isOk,exp,opts){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.ok==='true')b.classList.add('correct');
+  });
+  if(isOk){score++;document.getElementById('scoreNum').textContent=score;}
+  else btn.classList.add('wrong');
+  const fa=document.getElementById('feedbackArea');
+  fa.innerHTML=(isOk?'✅ ':'❌ ')+exp;
+  fa.className='feedback-area show';
+  document.getElementById('nextQBtn').className='next-q-btn show';
+}
+function nextQ(){
+  idx++;
+  if(idx<qs.length)loadQ();
+  else endGame();
+}
+function endGame(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  const pct=Math.round(score/qs.length*100);
+  document.getElementById('rIcon').textContent=score===qs.length?'🏆':pct>=70?'👍':'💪';
+  document.getElementById('rTitle').textContent=score===qs.length?'Perfetto!':pct>=70?'Ottimo!':'Riprova!';
+  document.getElementById('rScore').textContent=`${score}/${qs.length} scenari corretti (${pct}%)`;
+  document.getElementById('rMsg').textContent=score===qs.length?'Eccellente! Sai gestire situazioni legate a VDT, luoghi di lavoro, stress ed emergenza.':
+    pct>=70?'Buona comprensione dei comportamenti corretti. Rileggi le spiegazioni per consolidare.':
+    'Ripassate i moduli su videoterminale, luoghi di lavoro, stress e gestione emergenze.';
+}
+</script>
+</body>
+</html>
